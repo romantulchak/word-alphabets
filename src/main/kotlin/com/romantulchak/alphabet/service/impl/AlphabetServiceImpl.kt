@@ -1,5 +1,6 @@
 package com.romantulchak.alphabet.service.impl
 
+import com.romantulchak.alphabet.dto.AlphabetDTO
 import com.romantulchak.alphabet.exception.LanguageNotFoundException
 import com.romantulchak.alphabet.model.Alphabet
 import com.romantulchak.alphabet.model.Letter
@@ -34,5 +35,10 @@ class AlphabetServiceImpl(
         }
         val alphabet = Alphabet(null, letters, language, language.code)
         alphabetRepository.save(alphabet)
+    }
+
+    override fun getAlphabetForLanguage(languageCode: String): AlphabetDTO{
+        val alphabet = alphabetRepository.findAllByLanguageCode(languageCode)
+        return AlphabetDTO(alphabet.letters)
     }
 }

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AlphabetRepository : JpaRepository<Alphabet, Long> {
+
+    fun findAllByLanguageCode(code: String): Alphabet
 }

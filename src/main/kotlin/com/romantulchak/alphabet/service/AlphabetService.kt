@@ -1,5 +1,6 @@
 package com.romantulchak.alphabet.service
 
+import com.romantulchak.alphabet.dto.AlphabetDTO
 import com.romantulchak.alphabet.request.CreateAlphabetRequest
 
 interface AlphabetService {
@@ -11,4 +12,5 @@ interface AlphabetService {
      */
     fun createAlphabetForLanguage(createAlphabetRequest: CreateAlphabetRequest)
 
+    fun getAlphabetForLanguage(languageCode: String): AlphabetDTO
 }
