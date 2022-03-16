@@ -1,5 +1,6 @@
 package com.romantulchak.alphabet.controller
 
+import com.romantulchak.alphabet.exception.AlphabetAlreadyExistsException
 import com.romantulchak.alphabet.exception.LanguageAlreadyExistsException
 import com.romantulchak.alphabet.exception.LanguageNotFoundException
 import org.springframework.http.HttpHeaders
@@ -26,6 +27,16 @@ class AdviceController : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(LanguageNotFoundException::class)
     fun handleLanguageNotFoundException(ex: LanguageNotFoundException?, webRequest: WebRequest?): ResponseEntity<*>? {
+        val body: Map<String, Any?>? = ex?.let { getBody(it) }
+        return ex?.let {
+            handleExceptionInternal(
+                it, body, HttpHeaders(), HttpStatus.BAD_REQUEST,
+                webRequest!!
+            )
+        }
+    }
+    @ExceptionHandler(AlphabetAlreadyExistsException::class)
+    fun handleAlphabetAlreadyExistsException(ex: AlphabetAlreadyExistsException?, webRequest: WebRequest?): ResponseEntity<*>? {
         val body: Map<String, Any?>? = ex?.let { getBody(it) }
         return ex?.let {
             handleExceptionInternal(

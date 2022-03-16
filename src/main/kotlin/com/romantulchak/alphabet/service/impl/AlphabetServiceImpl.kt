@@ -2,6 +2,7 @@ package com.romantulchak.alphabet.service.impl
 
 import com.romantulchak.alphabet.consts.AppConst
 import com.romantulchak.alphabet.dto.AlphabetDTO
+import com.romantulchak.alphabet.exception.AlphabetAlreadyExistsException
 import com.romantulchak.alphabet.exception.LanguageNotFoundException
 import com.romantulchak.alphabet.model.Alphabet
 import com.romantulchak.alphabet.model.Letter
@@ -16,6 +17,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import javax.transaction.Transactional
 
 const val REGEX_STATEMENT = "code: [a-zA-Z]*\talphabet:"
 const val REGEX_SEMICOLON_COMA = "[;,]"
@@ -32,11 +34,15 @@ class AlphabetServiceImpl(
     /**
      * {@inheritDoc}
      */
+    @Transactional
     override fun createAlphabetForLanguage(createAlphabetRequests: List<CreateAlphabetRequest>) {
         createAlphabetRequests.forEach {
             val language = languageRepository.findByCode(it.languageCode)
             if (language === null) {
                 throw LanguageNotFoundException(it.languageCode)
+            }
+            if (alphabetRepository.existsByCode(it.languageCode)){
+                throw AlphabetAlreadyExistsException(it.languageCode)
             }
             val alphabet = Alphabet(null, getLetters(it), language, language.code)
             alphabetRepository.save(alphabet)
@@ -51,6 +57,9 @@ class AlphabetServiceImpl(
         return AlphabetDTO(alphabet.letters)
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun createAlphabetFromFile(file: MultipartFile) {
         val uuid: UUID = UUID.randomUUID()
         file.inputStream.use {
