@@ -8,7 +8,7 @@ data class Alphabet(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long?,
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     var letters: List<Letter>,
     @OneToOne
     var language: Language,

@@ -1,7 +1,7 @@
 package com.romantulchak.alphabet.service.impl
 
 import com.romantulchak.alphabet.consts.AppConst
-import com.romantulchak.alphabet.dto.AlphabetDTO
+import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.exception.AlphabetAlreadyExistsException
 import com.romantulchak.alphabet.exception.LanguageNotFoundException
 import com.romantulchak.alphabet.model.Alphabet
@@ -41,7 +41,7 @@ class AlphabetServiceImpl(
             if (language === null) {
                 throw LanguageNotFoundException(it.languageCode)
             }
-            if (alphabetRepository.existsByCode(it.languageCode)){
+            if (alphabetRepository.existsByCode(it.languageCode)) {
                 throw AlphabetAlreadyExistsException(it.languageCode)
             }
             val alphabet = Alphabet(null, getLetters(it), language, language.code)
@@ -52,9 +52,11 @@ class AlphabetServiceImpl(
     /**
      * {@inheritDoc}
      */
-    override fun getAlphabetForLanguage(languageCode: String): AlphabetDTO {
-        val alphabet = alphabetRepository.findAllByLanguageCode(languageCode)
-        return AlphabetDTO(alphabet.letters)
+    override fun getAlphabetForLanguage(languageCode: String): List<LetterDTO> {
+        return alphabetRepository.findAllByLanguageCode(languageCode).letters
+            .map {
+                LetterDTO(it.letterUpperCase, it.asciiCode)
+            }.sortedBy { it.letter.inc() }
     }
 
     /**

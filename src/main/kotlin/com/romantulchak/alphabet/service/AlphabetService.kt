@@ -1,6 +1,6 @@
 package com.romantulchak.alphabet.service
 
-import com.romantulchak.alphabet.dto.AlphabetDTO
+import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.request.CreateAlphabetRequest
 import org.springframework.web.multipart.MultipartFile
 
@@ -14,12 +14,12 @@ interface AlphabetService {
     fun createAlphabetForLanguage(createAlphabetRequests: List<CreateAlphabetRequest>)
 
     /**
-     * Gets alphabet for language
+     * Gets alphabet letters for language sorted by natural order
      *
      * @param languageCode to find language by its code
      * @return alphabet for language
      */
-    fun getAlphabetForLanguage(languageCode: String): AlphabetDTO
+    fun getAlphabetForLanguage(languageCode: String): List<LetterDTO>
 
     /**
      * Create alphabet from file

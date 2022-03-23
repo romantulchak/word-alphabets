@@ -1,6 +1,6 @@
 package com.romantulchak.alphabet.controller
 
-import com.romantulchak.alphabet.dto.AlphabetDTO
+import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.request.CreateAlphabetRequest
 import com.romantulchak.alphabet.service.AlphabetService
 import org.springframework.web.bind.annotation.*
@@ -18,7 +18,7 @@ class AlphabetController(private val alphabetService: AlphabetService) {
     }
 
     @GetMapping
-    fun getAlphabetByLanguage(@RequestParam(value = "languageCode", defaultValue = "en") languageCode: String): AlphabetDTO{
+    fun getAlphabetByLanguage(@RequestParam(value = "languageCode", defaultValue = "en") languageCode: String): List<LetterDTO>{
         return alphabetService.getAlphabetForLanguage(languageCode)
     }
 
