@@ -1,5 +1,6 @@
 package com.romantulchak.alphabet.service
 
+import com.romantulchak.alphabet.dto.FilePreviewDTO
 import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.request.CreateAlphabetRequest
 import org.springframework.web.multipart.MultipartFile
@@ -27,4 +28,12 @@ interface AlphabetService {
      * @param file to required attributes to create alphabet
      */
     fun createAlphabetFromFile(file: MultipartFile)
+
+    /**
+     * Gets preview for file
+     *
+     * @param file to be previewed
+     * @return preview for file
+     */
+    fun getFilePreview(file: MultipartFile): List<FilePreviewDTO>
 }

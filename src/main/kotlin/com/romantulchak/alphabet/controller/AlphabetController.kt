@@ -1,5 +1,6 @@
 package com.romantulchak.alphabet.controller
 
+import com.romantulchak.alphabet.dto.FilePreviewDTO
 import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.request.CreateAlphabetRequest
 import com.romantulchak.alphabet.service.AlphabetService
@@ -25,6 +26,11 @@ class AlphabetController(private val alphabetService: AlphabetService) {
     @PostMapping("/create-from-file")
     fun createFromFile(@RequestPart(value = "file") file: MultipartFile){
         alphabetService.createAlphabetFromFile(file)
+    }
+
+    @PostMapping("/preview")
+    fun getFilePreview(@RequestPart(value = "file") file: MultipartFile): List<FilePreviewDTO>{
+        return alphabetService.getFilePreview(file)
     }
 
 }

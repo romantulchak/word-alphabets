@@ -1,6 +1,8 @@
 package com.romantulchak.alphabet.service.impl
 
 import com.romantulchak.alphabet.consts.AppConst
+import com.romantulchak.alphabet.dto.FilePreviewDTO
+import com.romantulchak.alphabet.dto.LanguageDTO
 import com.romantulchak.alphabet.dto.LetterDTO
 import com.romantulchak.alphabet.exception.AlphabetAlreadyExistsException
 import com.romantulchak.alphabet.exception.LanguageNotFoundException
@@ -63,12 +65,29 @@ class AlphabetServiceImpl(
      * {@inheritDoc}
      */
     override fun createAlphabetFromFile(file: MultipartFile) {
-        val uuid: UUID = UUID.randomUUID()
-        file.inputStream.use {
-            Files.copy(it, Paths.get("$filePath/$uuid"))
-        }
-        val alphabetRequestFromFile = getAlphabetsToCreateFromFile(uuid)
+        val fileUUID = getFileUUID(file)
+        val alphabetRequestFromFile = getAlphabetsToCreateFromFile(fileUUID)
         createAlphabetForLanguage(alphabetRequestFromFile)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getFilePreview(file: MultipartFile): List<FilePreviewDTO> {
+        val fileUUID = getFileUUID(file)
+        val alphabetsToCreateFromFile = getAlphabetsToCreateFromFile(fileUUID)
+        val previews: MutableList<FilePreviewDTO> = arrayListOf()
+        alphabetsToCreateFromFile.forEach {
+            val language = languageRepository.findByCode(it.languageCode)
+            if (language === null){
+                throw LanguageNotFoundException(it.languageCode)
+            }
+
+            val languageDTO = LanguageDTO(language.id, language.code, language.name)
+            val filePreviewDTO = FilePreviewDTO(languageDTO, it.letters)
+            previews.add(filePreviewDTO)
+        }
+        return previews
     }
 
     /**
@@ -115,5 +134,19 @@ class AlphabetServiceImpl(
             }
         }
         return alphabetRequests
+    }
+
+    /**
+     * Generates UUID for file
+     *
+     * @param file to copy it to local directory
+     * @return UUID (file name)
+     */
+    private fun getFileUUID(file: MultipartFile): UUID{
+        val uuid: UUID = UUID.randomUUID()
+        file.inputStream.use {
+            Files.copy(it, Paths.get("$filePath/$uuid"))
+        }
+        return uuid
     }
 }
